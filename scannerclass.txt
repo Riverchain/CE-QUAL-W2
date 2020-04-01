@@ -1,0 +1,229 @@
+﻿package mostafa;
+import java.util.ArrayList;
+
+public class scannerclass {
+	
+	int Row = 0;
+	boolean waste = true;
+	boolean delimeter = true;
+	int spaceCounter = 0;
+	char[] Word = new char[1000];
+	int i = 0;
+	char[] sourceArray;
+	int total;
+	String wordString = "";
+	int token = 0;
+	String Result = "";
+	ArrayList<String> Columns = new ArrayList<>();
+	ArrayList<ArrayList<String>> Rows = new ArrayList<ArrayList<String>>();
+	ArrayList<String> outputRows = new ArrayList<>();
+	ArrayList<ArrayList<String>> outputColumns = new ArrayList<ArrayList<String>>();
+
+	public String Fun(char[] input) {
+		sourceArray = input;
+		total = sourceArray.length;
+		removeWaste();
+		Scanner();
+		WriteToString();
+		return Result;
+	}
+	
+	public void initialize() {
+		
+	}
+	
+	public void removeWaste() {
+		while(waste) {
+			switch (sourceArray[token]) {
+			case ' ': {
+				if(Word[0] != '\0') {
+					Word[i] = '\0';
+					getStringWord();
+        			i = 0;
+					if(wordString.compareTo("Depth") == 0)
+						waste = false;
+					}
+				break;
+			}
+			default: {
+        		//در رشته ای ذخيره کن
+        		Word[i] = sourceArray[token];
+        		i++;
+        		break;
+        		}
+			}
+			token++;
+			if(token >= total)
+				return;
+		}
+		removeLine();
+	}
+	
+	public void removeLine() {
+		waste = true;
+		int k = 0;
+		while(waste) {
+			switch (sourceArray[token]) {
+			case ' ': {
+				if(Word[0] != '\0') {
+					Word[i] = '\0';
+					getStringWord();
+        			i = 0;
+					if(wordString.compareTo("35") == 0) {
+						k++;
+						if(k == 2)
+							waste = false;
+						}
+					}
+				break;
+			}
+			default: {
+        		//در رشته ای ذخيره کن
+        		Word[i] = sourceArray[token];
+        		i++;
+        		break;
+        		}
+			}
+			token++;
+			if(token >= total)
+				return;
+		}
+	}
+	
+	public void Scanner() {
+		delimeter = true;
+		while(token != total) {
+			switch (sourceArray[token]) {
+			case '\n': {
+				if(Word[0] != '\0') {
+					Word[i] = '\0';
+					ToStringWord();
+        			i = 0;
+					}
+				Row++;
+				Rows.add(Columns);
+				Columns = new ArrayList<>();
+				if(Row == 81) {//115 - 35 + 1 = 81
+					Row = 0;
+					emit();
+					waste = true;
+					removeWaste();
+					if(token >= total)
+						return;
+				}
+				break;
+			}
+			case '\r': {
+				break;
+			}
+			case ' ': {
+				spaceCounter++;
+				if(Word[1] != '\0' && Word[1] != ' ') {
+					Word[i] = '\0';
+					ToStringWord();
+        			i = 0;
+        			spaceCounter = 1;
+        			break;
+					}
+				if(delimeter) {
+					if(spaceCounter == 4) {
+						spaceCounter = 0;
+						delimeter = false;
+						}
+					}
+				else
+				{
+					//در رشته ای ذخيره کن
+	        		Word[i] = ' ';
+	        		i++;
+					if(spaceCounter == 6) {
+						Word[i] = '\0';
+						ToStringWord();
+	        			i = 0;
+	        			spaceCounter = 0;
+	        			}
+					}
+/*				if(Word[0] != '\0') {
+					Word[i] = '\0';
+					ToStringWord();
+        			i = 0;
+        			spaceCounter = 0;
+        			break;
+					}
+				if(isWord) {
+					if(spaceCounter == 6) {
+						wordString = "      ";
+						isWord = false;
+						Columns.add(wordString);
+						spaceCounter = 0;
+					}
+				}
+				else {
+					if(spaceCounter == 4) {
+						isWord = true;
+						spaceCounter = 0;
+					}
+				}*/
+				break;
+			}
+			default: {
+        		//در رشته ای ذخيره کن
+        		Word[i] = sourceArray[token];
+        		i++;
+        		break;
+        		}
+			}
+			token++;
+			}
+		}
+	
+	public void emit() {
+		for(int i = 0; i < 46 ; i++) {//number of columns is 65 - 20 + 1 = 46
+			for(int j = 0; j < 81; j++) {//number of rows is 115 - 35 + 1= 81
+				outputRows.add(Rows.get(j).get(i));
+			}
+		}
+		outputColumns.add(outputRows);
+		Rows = new ArrayList<>();
+		Columns = new ArrayList<>();
+		outputRows = new ArrayList<>();
+	}
+	
+	public void getStringWord() {
+    	wordString = "";
+    	int counter = 0;
+    	for (char c : Word) {
+    		counter++;
+    		if (c == '\0')
+    		{
+    			break;
+    			}
+    		wordString += c;
+    		}
+    	//clearWord
+    	for (int i = 0; i < counter; i++)
+    		Word[i] = '\0';
+    	}
+
+	public void ToStringWord() {
+//		isWord = false;
+		getStringWord();
+		if(wordString.length() == 6) {
+			Columns.add(wordString);
+		}
+		delimeter = true;
+	}
+	
+	int uu = 0;
+	public void WriteToString() {
+		//429 * 3726 = 1,598,454
+		for(int i = 0; i < 3726; i++) {//rows 46 * 81 = 3726
+			for(int j = 0; j < outputColumns.size(); j++) {//columns is number of table
+				System.out.println(uu++);
+				Result += outputColumns.get(j).get(i);
+				Result += "    ";
+			}
+			Result += "\r\n";
+		}
+	}
+}

@@ -1,0 +1,17 @@
+package mostafa;
+
+import java.io.IOException;
+
+public class mainclass {
+	public static void main(String[] args) {
+	String inputPath = "D:\\snp1.opt";
+	String outputPath = "D:\\output.opt";
+	ioclass ioInstance = new ioclass();
+	try {
+		char[] input = ioInstance.ReadFileToCharArray(inputPath);
+		scannerclass scannerInstance = new scannerclass();
+		String outStr = scannerInstance.Fun(input);
+		ioInstance.stringToFile(outStr, outputPath);
+		} catch (IOException e) { }
+	}
+}
